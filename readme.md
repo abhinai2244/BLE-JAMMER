@@ -27,3 +27,21 @@ All scripts require the following libraries:
 - `ezButton` for debouncing the toggle switch
 
 _Note: This code disables the default ESP32 Wi-Fi and Bluetooth controllers (`esp_bt_controller_deinit()`, `esp_wifi_stop()`) at startup to ensure maximum CPU allocation for the NRF24L01 modules running via SPI._
+
+## 4. Web Installer (`index.html`)
+This project includes a convenient web-based installer that allows you to directly flash the pre-compiled firmware onto your ESP32 board directly from your Google Chrome or Microsoft Edge browser.
+
+**How to Use:**
+1. Connect your ESP32 board to your computer via a USB data cable.
+2. Open `index.html` in a supported browser (Chrome, Edge, or Opera).
+3. Select your hardware configuration (Single VSPI, Single HSPI, or Dual).
+4. Click the "**Connect**" or "**Install**" button (which appears dynamically).
+5. A browser pop-up will ask you to select a serial port. Select the COM port corresponding to your ESP32 and click "Connect".
+
+**Troubleshooting "No port selected":**
+If you do not see your ESP32 listed in the port selection menu:
+* **Check the USB output:** Ensure you are using a data-capable USB cable, not just a charging cable.
+* **Power LED:** Ensure the small power LED on the ESP32 is illuminated.
+* **USB-to-Serial Drivers:** You may need to install the correct drivers for your ESP32's USB-to-UART bridge chip:
+  * For **CP2102** chips (usually a square chip near the USB port): [Download CP210x Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+  * For **CH341/CH340** chips (usually a rectangular chip): [Download CH341 Driver](https://github.com/nodemcu/nodemcu-devkit/tree/master/Drivers)
