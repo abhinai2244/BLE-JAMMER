@@ -22,6 +22,13 @@ unsigned int flagv = 0; // VSPI// Flag variable to keep track of direction
 int ch = 45;            // Variable to store value of ch
 int ch1 = 45;           // Variable to store value of ch
 
+// Wi-Fi 2.4GHz Channel Center Frequencies (Mapped to NRF24 offsets: 2400 +
+// offset) Channels 1-14: 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447, 2452,
+// 2457, 2462, 2467, 2472, 2484
+const int wifi_channels[] = {12, 17, 22, 27, 32, 37, 42,
+                             47, 52, 57, 62, 67, 72, 84};
+const int num_wifi_channels = 14;
+int wifi_idx = 0;
 ezButton toggleSwitch(33);
 
 void two() {
@@ -48,24 +55,30 @@ void two() {
       flagv = 0;
     }
 
-    if ((ch > 84) && (flag == 0)) {
+    if ((ch > 79) && (flag == 0)) {
       flag = 1;
     } else if ((ch < 2) && (flag == 1)) {
       flag = 0;
     }
 
-    radio.setChannel(ch);
-    radio1.setChannel(ch1);
+    radio.setChannel(ch); // Radio 0 sweeps Bluetooth spectrum
+
+    // Radio 1 SNIPES Wi-Fi channels sequentially
+    radio1.setChannel(wifi_channels[wifi_idx]);
+    wifi_idx++;
+    if (wifi_idx >= num_wifi_channels)
+      wifi_idx = 0;
   }
 }
 
 void one() {
-  // RANDOM BURST MODE: BLUETOOTH + WIFI 2.4GHZ
-  // Added upper limits up to 85 to hit Wi-Fi channels 1-14.
+  // RANDOM BURST MODE: BLUETOOTH + TARGETED WIFI
   // Performs a fast tight loop before yielding back to check the button.
   for (int burst = 0; burst < 30; burst++) {
-    radio1.setChannel(random(85));
-    radio.setChannel(random(85));
+    // Radio 1 STRICTLY targets Wi-Fi channels
+    radio1.setChannel(wifi_channels[random(num_wifi_channels)]);
+    // Radio 0 targets the Bluetooth space
+    radio.setChannel(random(80));
   }
 }
 
